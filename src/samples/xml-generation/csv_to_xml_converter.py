@@ -9,6 +9,7 @@ from entities.customer import Customer
 from entities.address import Address
 from entities.segment import Segment
 from entities.country import Country
+from entities.market import Market
 
 
 class CSVtoXMLConverter:
@@ -24,26 +25,19 @@ class CSVtoXMLConverter:
             builder=lambda row: Country(row["Country"])
         )
 
+        # read markets
+        markets = self._reader.read_entities(
+            attr="Market",
+            builder=lambda row: Market(
+                name=row["Market"],
+                region=row["Region"]
+            )
+        ) 
+
         # read segments
         segments = self._reader.read_entities(
             attr="Segment",
             builder=lambda row: Segment(row["Segment"])
-        )
-
-        # read orders
-        orders = self._reader.read_entities(
-            attr="Order ID",
-            builder=lambda row: Order(
-                order_id=row["Order ID"],
-                order_date=row["Order Date"],
-                market=row["Market"],
-                order_priority=row["Order Priority"],
-                ship_info=Ship(
-                    ship_date=row["Ship Date"],
-                    ship_mode=row["Ship Mode"],
-                    shiping_cost=row["Shipping Cost"]
-                )
-            )
         )
 
         # read customers
@@ -62,6 +56,22 @@ class CSVtoXMLConverter:
             )
         )
 
+        # read orders
+        orders = self._reader.read_entities(
+            attr="Order ID",
+            builder=lambda row: Order(
+                order_id=row["Order ID"],
+                order_date=row["Order Date"],
+                order_priority=row["Order Priority"],
+                customer=customers[row["Customer ID"]],
+                market=markets[row["Market"]],
+                ship_info=Ship(
+                    ship_date=row["Ship Date"],
+                    ship_mode=row["Ship Mode"],
+                    shiping_cost=row["Shipping Cost"]
+                )
+            )
+        )
 
         # generate the final xml
         root_el = ET.Element("Store")
@@ -69,6 +79,10 @@ class CSVtoXMLConverter:
         orders_el = ET.Element("Orders")
         for order in orders.values():
             orders_el.append(order.to_xml())
+
+        markets_el = ET.Element("Markets")
+        for market in markets.values():
+            markets_el.append(market.to_xml())
 
         customers_el = ET.Element("Customers")
         for customer in customers.values():
@@ -83,6 +97,7 @@ class CSVtoXMLConverter:
             countries_el.append(country.to_xml())
 
         root_el.append(orders_el)
+        root_el.append(markets_el)
         root_el.append(customers_el)
         root_el.append(segments_el)
         root_el.append(countries_el)

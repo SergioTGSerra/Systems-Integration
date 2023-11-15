@@ -17,6 +17,9 @@ class Customer:
         el.append(self._address.to_xml())
         return el
 
+    def get_id(self):
+        return self._id
+
     def __str__(self):
         return f"{self._name}, age:{self._age}, country:{self._country}" 
 

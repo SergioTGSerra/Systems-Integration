@@ -2,19 +2,21 @@ import xml.etree.ElementTree as ET
 
 class Order:
 
-    def __init__(self, order_id, order_date, market, order_priority, ship_info):
+    def __init__(self, order_id, order_date, order_priority, customer, market, ship_info):
         self._id = order_id
         self._order_date = order_date
-        self._market = market
         self._order_priority = order_priority
+        self._market = market
+        self._customer = customer
         self._ship_info = ship_info
 
     def to_xml(self):
         order_element = ET.Element("Order")
         order_element.set("id", self._id)
         order_element.set("order_date", self._order_date)
-        order_element.set("market", self._market)
         order_element.set("order_priority", self._order_priority)
+        order_element.set("customer_ref", str(self._customer.get_id()))
+        order_element.set("market_ref", str(self._market.get_id()))
         order_element.append(self._ship_info.to_xml())
         
         return order_element
