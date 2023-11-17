@@ -11,6 +11,7 @@ from entities.segment import Segment
 from entities.country import Country
 from entities.market import Market
 from entities.product import Product
+from entities.category import Category
 
 
 class CSVtoXMLConverter:
@@ -34,6 +35,22 @@ class CSVtoXMLConverter:
                 region=row["Region"]
             )
         ) 
+
+        categories = self._reader.read_entities(
+            attr="Category",
+            builder=lambda row: Category(
+                name=row["Category"]
+            )
+        )
+
+        # Read subcategories
+        subcategories = self._reader.read_entities(
+            attr="Sub-Category",
+            builder=lambda row: Category(
+                name=row["Sub-Category"],
+                parent_category=categories[row["Category"]] if row["Category"] in categories else None
+            )
+        )
 
         # read segments
         segments = self._reader.read_entities(
@@ -63,6 +80,7 @@ class CSVtoXMLConverter:
             builder=lambda row: Product(
                 product_id=row["Product ID"],
                 product_name=row["Product Name"],
+                product_sub_category=subcategories[row["Sub-Category"]],
                 sales=row["Sales"],
                 quantity=row["Quantity"],
                 discount=row["Discount"],
@@ -113,6 +131,13 @@ class CSVtoXMLConverter:
         products_el = ET.Element("Products")
         for product in products.values():
             products_el.append(product.to_xml())
+
+        categories_el = ET.Element("Categories")
+        for category in categories.values():
+            categories_el.append(category.to_xml())
+
+        for subcategory in subcategories.values():
+            categories_el.append(subcategory.to_xml())
         
 
         root_el.append(orders_el)
@@ -121,6 +146,7 @@ class CSVtoXMLConverter:
         root_el.append(customers_el)
         root_el.append(segments_el)
         root_el.append(countries_el)
+        root_el.append(categories_el)
 
         return root_el
 
