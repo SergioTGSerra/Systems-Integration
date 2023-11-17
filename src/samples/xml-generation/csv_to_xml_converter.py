@@ -10,6 +10,7 @@ from entities.address import Address
 from entities.segment import Segment
 from entities.country import Country
 from entities.market import Market
+from entities.product import Product
 
 
 class CSVtoXMLConverter:
@@ -56,6 +57,19 @@ class CSVtoXMLConverter:
             )
         )
 
+        # read products
+        products = self._reader.read_entities(
+            attr="Product ID",
+            builder=lambda row: Product(
+                product_id=row["Product ID"],
+                product_name=row["Product Name"],
+                sales=row["Sales"],
+                quantity=row["Quantity"],
+                discount=row["Discount"],
+                profit=row["Profit"]
+            )
+        )
+
         # read orders
         orders = self._reader.read_entities(
             attr="Order ID",
@@ -96,7 +110,13 @@ class CSVtoXMLConverter:
         for country in countries.values():
             countries_el.append(country.to_xml())
 
+        products_el = ET.Element("Products")
+        for product in products.values():
+            products_el.append(product.to_xml())
+        
+
         root_el.append(orders_el)
+        root_el.append(products_el)
         root_el.append(markets_el)
         root_el.append(customers_el)
         root_el.append(segments_el)

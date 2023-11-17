@@ -3,10 +3,9 @@ import xml.etree.ElementTree as ET
 
 class Product:
 
-    def __init__(self, product_id, name, category_id, sales, quantity, discount, profit):
+    def __init__(self, product_id, product_name, sales, quantity, discount, profit):
         self._id = product_id
-        self._name = name
-        self._category_id = category_id
+        self._name = product_name
         self._sales = sales
         self._quantity = quantity
         self._discount = discount
@@ -16,7 +15,6 @@ class Product:
         el = ET.Element("Product")
         el.set("id", str(self._id))
         el.set("name", self._name)
-        el.set("category_id", str(self._category_id))
         el.set("sales", str(self._sales))
         el.set("quantity", str(self._quantity))
         el.set("discount", str(self._discount))
