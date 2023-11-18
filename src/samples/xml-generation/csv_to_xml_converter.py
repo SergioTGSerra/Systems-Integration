@@ -36,6 +36,7 @@ class CSVtoXMLConverter:
             )
         ) 
 
+        # Read categories
         categories = self._reader.read_entities(
             attr="Category",
             builder=lambda row: Category(
@@ -74,20 +75,6 @@ class CSVtoXMLConverter:
             )
         )
 
-        # read products
-        products = self._reader.read_entities(
-            attr="Product ID",
-            builder=lambda row: Product(
-                product_id=row["Product ID"],
-                product_name=row["Product Name"],
-                product_sub_category=subcategories[row["Sub-Category"]],
-                sales=row["Sales"],
-                quantity=row["Quantity"],
-                discount=row["Discount"],
-                profit=row["Profit"]
-            )
-        )
-
         # read orders
         orders = self._reader.read_entities(
             attr="Order ID",
@@ -103,6 +90,25 @@ class CSVtoXMLConverter:
                     shiping_cost=row["Shipping Cost"]
                 )
             )
+        )
+
+        def after_creating_product(product, row):
+            # add the product to the appropriate order
+            orders[row["Order ID"]].add_product(product)
+
+        # read products
+        products = self._reader.read_entities(
+            attr="Product ID",
+            builder=lambda row: Product(
+                product_id=row["Product ID"],
+                product_name=row["Product Name"],
+                product_sub_category=subcategories[row["Sub-Category"]],
+                sales=row["Sales"],
+                quantity=row["Quantity"],
+                discount=row["Discount"],
+                profit=row["Profit"]
+            ),
+            after_create=after_creating_product
         )
 
         # generate the final xml

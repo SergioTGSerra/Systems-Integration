@@ -1,6 +1,5 @@
 import xml.etree.ElementTree as ET
 
-
 class Product:
 
     def __init__(self, product_id, product_name, product_sub_category, sales, quantity, discount, profit):
@@ -16,7 +15,7 @@ class Product:
         el = ET.Element("Product")
         el.set("id", str(self._id))
         el.set("name", self._name)
-        el.set("sub_category_ref", str(self._sub_category.get_id()))
+        el.set("category_ref", str(self._sub_category.get_id()))
         el.set("sales", str(self._sales))
         el.set("quantity", str(self._quantity))
         el.set("discount", str(self._discount))
@@ -28,6 +27,5 @@ class Product:
 
     def __str__(self):
         return f"name: {self._name}, id:{self._id}"
-
-
+        
 Product.counter = 0
