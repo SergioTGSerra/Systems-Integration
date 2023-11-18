@@ -9,7 +9,7 @@ class Order:
         self._market = market
         self._customer = customer
         self._ship_info = ship_info
-        self._products = []  
+        self._products = []
 
     def add_product(self, product):
         self._products.append(product)

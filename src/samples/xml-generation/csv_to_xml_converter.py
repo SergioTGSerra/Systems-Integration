@@ -92,9 +92,13 @@ class CSVtoXMLConverter:
             )
         )
 
-        def after_creating_product(product, row):
-            # add the product to the appropriate order
-            orders[row["Order ID"]].add_product(product)
+        def add_product_to_orders(product, row):
+            # read csv and associate products to orders
+            with open(self._reader._path, 'r') as file:
+                reader = csv.DictReader(file, delimiter=',')
+                for row in reader:
+                    if row["Product ID"] == product.get_id():
+                        orders[row["Order ID"]].add_product(product)
 
         # read products
         products = self._reader.read_entities(
@@ -102,13 +106,13 @@ class CSVtoXMLConverter:
             builder=lambda row: Product(
                 product_id=row["Product ID"],
                 product_name=row["Product Name"],
-                product_sub_category=subcategories[row["Sub-Category"]],
+                product_category=subcategories[row["Sub-Category"]],
                 sales=row["Sales"],
                 quantity=row["Quantity"],
                 discount=row["Discount"],
                 profit=row["Profit"]
             ),
-            after_create=after_creating_product
+            after_create=add_product_to_orders
         )
 
         # generate the final xml
