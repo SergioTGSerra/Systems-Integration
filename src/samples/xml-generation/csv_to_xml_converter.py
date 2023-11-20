@@ -93,12 +93,9 @@ class CSVtoXMLConverter:
         )
 
         def add_product_to_orders(product, row):
-            # read csv and associate products to orders
-            with open(self._reader._path, 'r') as file:
-                reader = csv.DictReader(file, delimiter=',')
-                for row in reader:
-                    if row["Product ID"] == product.get_id():
-                        orders[row["Order ID"]].add_product(product)
+            for(order_id, order) in orders.items():
+                if order_id == row["Order ID"]:
+                    order.add_product(product)
 
         # read products
         products = self._reader.read_entities(
