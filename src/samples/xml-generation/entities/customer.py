@@ -3,9 +3,9 @@ import xml.etree.ElementTree as ET
 
 class Customer:
 
-    def __init__(self, customer_id, customer_name, segment, address):
-        self._id = customer_id
-        self._name = customer_name
+    def __init__(self, id, name, segment, address):
+        self._id = id
+        self._name = name
         self._segment = segment
         self._address = address
 

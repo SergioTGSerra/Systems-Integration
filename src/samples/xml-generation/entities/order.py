@@ -2,10 +2,10 @@ import xml.etree.ElementTree as ET
 
 class Order:
 
-    def __init__(self, order_id, order_date, order_priority, customer, market, ship_info):
-        self._id = order_id
-        self._order_date = order_date
-        self._order_priority = order_priority
+    def __init__(self, id, date, priority, customer, market, ship_info):
+        self._id = id
+        self._date = date
+        self._priority = priority
         self._market = market
         self._customer = customer
         self._ship_info = ship_info
@@ -15,23 +15,23 @@ class Order:
         self._products.append(product)
 
     def to_xml(self):
-        order_element = ET.Element("Order")
-        order_element.set("id", self._id)
-        order_element.set("order_date", self._order_date)
-        order_element.set("order_priority", self._order_priority)
-        order_element.set("customer_ref", str(self._customer.get_id()))
-        order_element.set("market_ref", str(self._market.get_id()))
-        order_element.append(self._ship_info.to_xml())
+        el = ET.Element("Order")
+        el.set("id", self._id)
+        el.set("date", self._date)
+        el.set("priority", self._priority)
+        el.set("customer_ref", str(self._customer.get_id()))
+        el.set("market_ref", str(self._market.get_id()))
+        el.append(self._ship_info.to_xml())
 
         products_element = ET.Element("Products")
         for product in self._products:
             product_id = product.get_id()
-            product_element = ET.Element("Product")
-            product_element.set("id", str(product_id))
-            products_element.append(product_element)
-        order_element.append(products_element)
+            product_el = ET.Element("Product")
+            product_el.set("id", str(product_id))
+            products_element.append(product_el)
+        el.append(products_element)
 
-        return order_element
+        return el
 
     def get_id(self):
         return self._id

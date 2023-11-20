@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 
 from csv_reader import CSVReader
 from entities.order import Order
-from entities.ship import Ship
+from entities.shipping import Shipping
 from entities.customer import Customer
 from entities.address import Address
 from entities.segment import Segment
@@ -63,8 +63,8 @@ class CSVtoXMLConverter:
         customers = self._reader.read_entities(
             attr="Customer ID",
             builder=lambda row: Customer(
-                customer_id=row["Customer ID"],
-                customer_name=row["Customer Name"],
+                id=row["Customer ID"],
+                name=row["Customer Name"],
                 segment=segments[row["Segment"]],
                 address=Address(
                     city=row["City"],
@@ -79,15 +79,15 @@ class CSVtoXMLConverter:
         orders = self._reader.read_entities(
             attr="Order ID",
             builder=lambda row: Order(
-                order_id=row["Order ID"],
-                order_date=row["Order Date"],
-                order_priority=row["Order Priority"],
+                id=row["Order ID"],
+                date=row["Order Date"],
+                priority=row["Order Priority"],
                 customer=customers[row["Customer ID"]],
                 market=markets[row["Market"]],
-                ship_info=Ship(
-                    ship_date=row["Ship Date"],
-                    ship_mode=row["Ship Mode"],
-                    shiping_cost=row["Shipping Cost"]
+                ship_info=Shipping(
+                    date=row["Ship Date"],
+                    mode=row["Ship Mode"],
+                    cost=row["Shipping Cost"]
                 )
             )
         )
@@ -104,13 +104,9 @@ class CSVtoXMLConverter:
         products = self._reader.read_entities(
             attr="Product ID",
             builder=lambda row: Product(
-                product_id=row["Product ID"],
-                product_name=row["Product Name"],
-                product_category=subcategories[row["Sub-Category"]],
-                sales=row["Sales"],
-                quantity=row["Quantity"],
-                discount=row["Discount"],
-                profit=row["Profit"]
+                id=row["Product ID"],
+                name=row["Product Name"],
+                category=subcategories[row["Sub-Category"]]
             ),
             after_create=add_product_to_orders
         )

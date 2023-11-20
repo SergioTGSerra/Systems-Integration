@@ -2,24 +2,16 @@ import xml.etree.ElementTree as ET
 
 class Product:
 
-    def __init__(self, product_id, product_name, product_category, sales, quantity, discount, profit):
-        self._id = product_id
-        self._name = product_name
-        self._category = product_category
-        self._sales = sales
-        self._quantity = quantity
-        self._discount = discount
-        self._profit = profit
+    def __init__(self, id, name, category):
+        self._id = id
+        self._name = name
+        self._category = category
 
     def to_xml(self):
         el = ET.Element("Product")
         el.set("id", str(self._id))
         el.set("name", self._name)
         el.set("category_ref", str(self._category.get_id()))
-        el.set("sales", str(self._sales))
-        el.set("quantity", str(self._quantity))
-        el.set("discount", str(self._discount))
-        el.set("profit", str(self._profit))
         return el
 
     def get_id(self):
