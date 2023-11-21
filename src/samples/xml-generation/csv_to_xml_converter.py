@@ -18,6 +18,8 @@ class CSVtoXMLConverter:
 
     def __init__(self, path):
         self._reader = CSVReader(path)
+        with open(self._reader._path, 'r') as file:
+            self._csv_data = list(csv.DictReader(file, delimiter=','))
 
     def to_xml(self):
         
@@ -93,9 +95,11 @@ class CSVtoXMLConverter:
         )
 
         def add_product_to_orders(product, row):
-            for(order_id, order) in orders.items():
-                if order_id == row["Order ID"]:
-                    order.add_product(product)
+            # associate products to orders
+            for csv_row in self._csv_data:
+                if csv_row["Product ID"] == product.get_id():
+                    orders[csv_row["Order ID"]].add_product(product)
+
 
         # read products
         products = self._reader.read_entities(
