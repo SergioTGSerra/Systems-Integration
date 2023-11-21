@@ -9,10 +9,10 @@ class Order:
         self._market = market
         self._customer = customer
         self._ship_info = ship_info
-        self._products = []
+        self._order_products = []
 
-    def add_product(self, product):
-        self._products.append(product)
+    def add_order_product(self, order_product):
+        self._order_products.append(order_product)
 
     def to_xml(self):
         el = ET.Element("Order")
@@ -24,11 +24,8 @@ class Order:
         el.append(self._ship_info.to_xml())
 
         products_element = ET.Element("Products")
-        for product in self._products:
-            product_id = product.get_id()
-            product_el = ET.Element("Product")
-            product_el.set("id", str(product_id))
-            products_element.append(product_el)
+        for order_product in self._order_products:
+            products_element.append(order_product.to_xml())
         el.append(products_element)
 
         return el

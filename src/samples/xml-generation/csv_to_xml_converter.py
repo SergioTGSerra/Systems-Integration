@@ -12,14 +12,13 @@ from entities.country import Country
 from entities.market import Market
 from entities.product import Product
 from entities.category import Category
+from entities.order_product import OrderProduct
 
 
 class CSVtoXMLConverter:
 
     def __init__(self, path):
         self._reader = CSVReader(path)
-        with open(self._reader._path, 'r') as file:
-            self._csv_data = list(csv.DictReader(file, delimiter=','))
 
     def to_xml(self):
         
@@ -94,12 +93,22 @@ class CSVtoXMLConverter:
             )
         )
 
-        def add_product_to_orders(product, row):
-            # associate products to orders
-            for csv_row in self._csv_data:
-                if csv_row["Product ID"] == product.get_id():
-                    orders[csv_row["Order ID"]].add_product(product)
+        def add_product_to_orders(order_product, row):
+            orders[row["Order ID"]].add_order_product(order_product)
 
+        # associate products and orders
+        self._reader.read_entities(
+            attr="Row ID",
+            builder=lambda row: OrderProduct(
+                order_id=row["Order ID"],
+                product_id=row["Product ID"],
+                quantity=row["Quantity"], 
+                discount=row["Discount"],
+                sales=row["Sales"],
+                profit=row["Profit"]
+            ), 
+            after_create=add_product_to_orders
+        )
 
         # read products
         products = self._reader.read_entities(
@@ -109,7 +118,6 @@ class CSVtoXMLConverter:
                 name=row["Product Name"],
                 category=subcategories[row["Sub-Category"]]
             ),
-            after_create=add_product_to_orders
         )
 
         # generate the final xml
@@ -145,7 +153,6 @@ class CSVtoXMLConverter:
 
         for subcategory in subcategories.values():
             categories_el.append(subcategory.to_xml())
-        
 
         root_el.append(orders_el)
         root_el.append(products_el)
@@ -154,7 +161,6 @@ class CSVtoXMLConverter:
         root_el.append(segments_el)
         root_el.append(countries_el)
         root_el.append(categories_el)
-
         return root_el
 
     def to_xml_str(self):
