@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="Store">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Orders">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Order" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Shipping">
+											<xs:complexType>
+												<xs:attribute name="date" use="required" />
+												<xs:attribute name="mode" use="required" />
+												<xs:attribute name="cost" use="required" />
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="Products">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Product" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:attribute name="id" use="required" />
+															<xs:attribute name="quantity" type="xs:integer" use="required" />
+															<xs:attribute name="discount" type="xs:float" />
+															<xs:attribute name="sales" type="xs:float" use="required" />
+															<xs:attribute name="profit" type="xs:float" use="required" />
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="id" type="xs:ID" use="required" />
+									<xs:attribute name="date" use="required" />
+									<xs:attribute name="priority" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="Critical" />
+												<xs:enumeration value="High" />
+												<xs:enumeration value="Low" />
+												<xs:enumeration value="Medium" />
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="customer_ref" type="xs:string" use="required" />
+									<xs:attribute name="market_ref" type="xs:integer" use="required" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Products">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Product" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="id" type="xs:string" use="required" />
+									<xs:attribute name="name" type="xs:string" use="required" />
+									<xs:attribute name="category_ref" type="xs:integer" use="required" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Markets">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Market" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="id" type="xs:integer" use="required" />
+									<xs:attribute name="name" type="xs:string" use="required" />
+									<xs:attribute name="region" type="xs:string" use="required" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Customers">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Customer" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Address">
+											<xs:complexType>
+												<xs:attribute name="country_ref" type="xs:integer" use="required" />
+												<xs:attribute name="city" type="xs:string" use="required" />
+												<xs:attribute name="state" type="xs:string" use="required" />
+												<xs:attribute name="postal_code" type="xs:string" />
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="id" type="xs:string" use="required" />
+									<xs:attribute name="name" type="xs:string" use="required" />
+									<xs:attribute name="segment_ref" type="xs:integer" use="required" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Segments">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Segment" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="id" type="xs:integer" use="required" />
+									<xs:attribute name="name" type="xs:string" use="required" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Countries">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Country" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="id" type="xs:integer" use="required" />
+									<xs:attribute name="name" type="xs:string" use="required" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Categories">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Category" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="id" type="xs:integer" use="required" />
+									<xs:attribute name="name" type="xs:string" use="required" />
+									<xs:attribute name="parent_category_id" type="xs:integer" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
