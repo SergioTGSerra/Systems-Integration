@@ -24,6 +24,7 @@ services:
       - "./docker/volumes/data:/data"
     depends_on:
       - rpc-server
+    tty: true
 
 volumes:
   postgres_data:
