@@ -1,11 +1,16 @@
 from functions.db_connection import DBConnection
 from functions.csv_to_xml_converter import CSVtoXMLConverter
+from functions.validate_xml import validate_xml
 
 def receive_file(binary_data, file_name):
     with open(f'/data/{file_name}', 'wb') as handle:
         handle.write(binary_data.data)
     converter = CSVtoXMLConverter(f"/data/{file_name}")
     data = converter.to_xml_str()
+
+    validation_result = validate_xml(data)
+    if not validation_result:
+        return "XML data does not conform to the XSD schema"
 
     db = DBConnection()
     db.connect()
