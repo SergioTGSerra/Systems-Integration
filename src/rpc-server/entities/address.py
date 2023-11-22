@@ -12,8 +12,8 @@ class Address:
     def to_xml(self):
         el = ET.Element("Address")
         el.set("country_ref", str(self._country.get_id()))
+        el.set("state_ref", str(self._state.get_id()))
         el.set("city", self._city)
-        el.set("state", self._state)
         el.set("postal_code", self._postal_code)
         
         return el

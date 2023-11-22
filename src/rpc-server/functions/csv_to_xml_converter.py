@@ -7,6 +7,7 @@ from entities.shipping import Shipping
 from entities.customer import Customer
 from entities.address import Address
 from entities.segment import Segment
+from entities.state import State
 from entities.country import Country
 from entities.market import Market
 from entities.product import Product
@@ -25,6 +26,12 @@ class CSVtoXMLConverter:
         countries = self._reader.read_entities(
             attr="Country",
             builder=lambda row: Country(row["Country"])
+        )
+
+        # read states
+        states = self._reader.read_entities(
+            attr="State",
+            builder=lambda row: State(row["State"])
         )
 
         # read markets
@@ -70,7 +77,7 @@ class CSVtoXMLConverter:
                     city=row["City"],
                     country=countries[row["Country"]],
                     postal_code=row["Postal Code"],
-                    state=row["State"]
+                    state=states[row["State"]]
                 )
             )
         )
@@ -138,6 +145,10 @@ class CSVtoXMLConverter:
         for segment in segments.values():
             segments_el.append(segment.to_xml())
 
+        states_el = ET.Element("States")
+        for state in states.values():
+            states_el.append(state.to_xml())
+
         countries_el = ET.Element("Countries")
         for country in countries.values():
             countries_el.append(country.to_xml())
@@ -158,6 +169,7 @@ class CSVtoXMLConverter:
         root_el.append(markets_el)
         root_el.append(customers_el)
         root_el.append(segments_el)
+        root_el.append(states_el)
         root_el.append(countries_el)
         root_el.append(categories_el)
         return root_el
