@@ -3,7 +3,6 @@ import xmlrpc.client
 print("connecting to server...")
 server = xmlrpc.client.ServerProxy('http://is-rpc-server:9000')
 
-string = "hello world"
-
-print(f" > {server.string_reverse(string)}")
-print(f" > {server.string_length(string)}")
+with open('/data/Global_Superstore2.csv', 'rb') as handle:
+    binary_data = xmlrpc.client.Binary(handle.read())
+    server.send_file(binary_data)
