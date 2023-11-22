@@ -1,5 +1,8 @@
 import xml.dom.minidom as md
 import xml.etree.ElementTree as ET
+import urllib.parse
+import urllib.request
+import json
 
 from functions.csv_reader import CSVReader
 from entities.order import Order
@@ -14,7 +17,6 @@ from entities.product import Product
 from entities.category import Category
 from entities.order_product import OrderProduct
 
-
 class CSVtoXMLConverter:
 
     def __init__(self, path):
@@ -28,10 +30,29 @@ class CSVtoXMLConverter:
             builder=lambda row: Country(row["Country"])
         )
 
+        def get_coordinates(row):
+            encoded_state = urllib.parse.quote(row["State"])
+            response = urllib.request.urlopen(f'https://nominatim.openstreetmap.org/search?format=json&limit=1&state={encoded_state}')
+            data = json.load(response)
+            if data: return data[0]['lat'], data[0]['lon']
+
+            encoded_city = urllib.parse.quote(row["City"])
+            response = urllib.request.urlopen(f'https://nominatim.openstreetmap.org/search?format=json&limit=1&city={encoded_city}')
+            data = json.load(response)
+            if data: return data[0]['lat'], data[0]['lon']
+
+            encoded_country = urllib.parse.quote(row["Country"])
+            response = urllib.request.urlopen(f'https://nominatim.openstreetmap.org/search?format=json&limit=1&country={encoded_country}')
+            data = json.load(response)
+            if data: return data[0]['lat'], data[0]['lon']
+
         # read states
         states = self._reader.read_entities(
             attr="State",
-            builder=lambda row: State(row["State"])
+            builder=lambda row: State(
+                name=row["State"],
+                coordinates=get_coordinates(row)
+            )
         )
 
         # read markets

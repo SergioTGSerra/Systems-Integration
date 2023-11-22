@@ -1,25 +1,20 @@
-import json
 import xml.etree.ElementTree as ET
-import urllib.request
 
 class State:
 
-    def __init__(self, name,):
+    def __init__(self, name, coordinates):
         State.counter += 1
         self._id = State.counter
         self._name = name
+        self._lat = coordinates[0]
+        self._log = coordinates[1]
 
     def to_xml(self):
         el = ET.Element("State")
         el.set("id", str(self._id))
         el.set("name", self._name)
-        encoded_state = urllib.parse.quote(self._name)
-        url = f'https://nominatim.openstreetmap.org/search?format=json&limit=1&state={encoded_state}'
-        with urllib.request.urlopen(url) as response:
-            data = json.loads(response.read())
-            if data:
-                el.set("lat", data[0]['lat'])
-                el.set("lon", data[0]['lon'])
+        el.set("lat", self._lat)
+        el.set("lon", self._log)
 
         return el
 
