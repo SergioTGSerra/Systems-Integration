@@ -1,32 +1,22 @@
+from functions.db_connection import DBConnection
 from functions.csv_to_xml_converter import CSVtoXMLConverter
-import psycopg2
 
-def receive_file(binary_data):
-    with open('/data/Global_Superstore2.csv', 'wb') as handle:
+def receive_file(binary_data, file_name):
+    with open(f'/data/{file_name}', 'wb') as handle:
         handle.write(binary_data.data)
-    converter = CSVtoXMLConverter("/data/Global_Superstore2.csv")
+    converter = CSVtoXMLConverter(f"/data/{file_name}")
     data = converter.to_xml_str()
 
-    try:
-        print("Connecting to database")
-        connection = psycopg2.connect(user="is",
-                                  password="is",
-                                  host="is-db",
-                                  port="5432",
-                                  database="is")
-
-        cursor = connection.cursor()
-        cursor.execute("INSERT INTO imported_documents (file_name, xml) VALUES (%s, %s)", ("teste", data,))
-
-        connection.commit()
-
-    except (Exception, psycopg2.Error) as error:
-        print("Failed to fetch data", error)
-
-    finally:
-        if connection:
-            cursor.close()
-            connection.close()
-
-    return "ok"
+    db = DBConnection()
+    db.connect()
     
+    result = db.execute_query_with_return("SELECT file_name FROM imported_documents WHERE file_name = %s AND is_deleted = false", (file_name,))
+    
+    if result:
+        db.disconnect()
+        return "File already exists"
+    
+    db.execute_query("INSERT INTO imported_documents (file_name, xml) VALUES (%s, %s)", (file_name, data,))
+    db.disconnect()
+
+    return "File received successfully"

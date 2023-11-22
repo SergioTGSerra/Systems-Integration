@@ -3,6 +3,8 @@ from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.server import SimpleXMLRPCRequestHandler
 
 from functions.receive_file import receive_file
+from functions.delete_file import delete_file
+from functions.show_files import show_files
 
 class RequestHandler(SimpleXMLRPCRequestHandler):
     rpc_paths = ('/RPC2',)
@@ -26,6 +28,8 @@ with SimpleXMLRPCServer(('0.0.0.0', 9000), requestHandler=RequestHandler) as ser
 
     # register both functions
     server.register_function(receive_file, 'send_file')
+    server.register_function(delete_file, 'delete_file')
+    server.register_function(show_files, 'show_files')
 
     # start the server
     print("Starting the RPC Server...")
