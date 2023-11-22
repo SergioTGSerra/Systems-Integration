@@ -6,4 +6,4 @@ def delete_file(file_id):
     db.execute_query("Update imported_documents set is_deleted = true where id = %s", (file_id,))
     db.disconnect()
 
-    return "ok"
+    return "File deleted successfully"
