@@ -3,6 +3,7 @@ import time
 from functions.send_file import send_file
 from functions.server_files import server_files
 from functions.delete_file_server import delete_file_server
+from functions.queries_server import *
 
 def menu():
     while True:
@@ -73,4 +74,31 @@ def view_files_menu():
             print("Invalid choice. Please try again.")
 
 def query_files_menu():
+    while True:
+        print("\nQuery files:")
+        print("1 - Order Orders by Priority")
+        print("2 - Get Orders by Market Order by Shipping Cost")
+        print("3 - Retrieve Customer Information with Address Details:")
+        print("4 - Count the number of Customers By Segment")
+        print("5 - Get Order and Customer Details with Geographic Information")
+        print("0 - Exit")
+
+        choice = input("Enter your choice: ")
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+        if choice == "1":
+            print(get_orders_order_by_priority())
+        elif choice == "2":
+            market_id = input("Enter market ID: ")
+            print(get_orders_by_market_order_by_shipping_cost(market_id))
+        elif choice == "3":
+            print(retrieve_customer_information_with_address_details())
+        elif choice == "4":
+            print(count_the_number_of_customers_by_segment_server())
+        elif choice == "5":
+            print(get_order_and_customer_details_with_geographic_information())
+        elif choice == "0":
+            break
+        else:
+            print("Invalid choice. Please try again.")
     pass
