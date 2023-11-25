@@ -294,7 +294,7 @@ def get_order_and_customer_details_with_geographic_information():
                 o.order_id, o.order_date, o.shipped_date, o.ship_mode, c.customer_name, c.postal_code, c.city, s.state_name, s.latitude, s.longitude
             """
     
-    result = db.execute_query_with_return(xquery, (file_name, file_name, file_name,)
+    result = db.execute_query_with_return(xquery, (file_name, file_name, file_name,))
 
     if result:
         root = etree.Element("Orders")
