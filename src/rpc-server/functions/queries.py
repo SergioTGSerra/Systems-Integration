@@ -326,6 +326,9 @@ def get_order_and_customer_details_with_geographic_information():
         db.disconnect()
 
         return xml_result
+    
+    else:
+        return "No results found"
 
             
 
