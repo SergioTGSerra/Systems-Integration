@@ -1,11 +1,16 @@
 from lxml import etree
 from functions.db_connection import DBConnection
 
-def get_orders_order_by_priority():
+def get_orders_order_by_priority(file_name):
     db = DBConnection()
     db.connect()
 
-    file_name = "Global_Superstore2.csv"
+    file_exists = db.execute_query_with_return("SELECT xml FROM queries WHERE file_name = %s and query_type = %s", (file_name, "1",))
+
+    if file_exists:
+        db.disconnect()
+        return file_exists[0][0]
+
 
     xquery = """
         SELECT
@@ -28,13 +33,7 @@ def get_orders_order_by_priority():
             root.append(etree.fromstring(order[0]))
         xml = etree.tostring(root, pretty_print=True).decode("utf-8")
 
-        file_exists = db.execute_query_with_return("SELECT file_name FROM queries WHERE file_name = %s", ("file_get_orders_by_priority",))
-
-        if file_exists:
-            db.disconnect()
-            return xml
-
-        db.execute_query("INSERT INTO queries (query_type, file_name, xml) VALUES (1, %s, %s)", ("file_get_orders_by_priority", xml))
+        db.execute_query("INSERT INTO queries (query_type, file_name, xml) VALUES (1, %s, %s)", (file_name, xml))
 
         db.disconnect()
 
@@ -42,11 +41,15 @@ def get_orders_order_by_priority():
     else:
         return "No results found"
  
-def get_orders_by_market_order_by_shipping_cost(market_id):
+def get_orders_by_market_order_by_shipping_cost(market_id, file_name):
     db = DBConnection()
     db.connect()
 
-    file_name = "Global_Superstore2.csv"
+    file_exists = db.execute_query_with_return("SELECT xml FROM queries WHERE file_name = %s and query_type = %s",(file_name, f"2 - {market_id}"),)
+
+    if file_exists:
+        db.disconnect()
+        return file_exists[0][0]
 
     xquery = f"""
         SELECT
@@ -71,13 +74,7 @@ def get_orders_by_market_order_by_shipping_cost(market_id):
 
         xml_result = etree.tostring(root, pretty_print=True).decode("utf-8")
 
-        file_exists = db.execute_query_with_return("SELECT file_name FROM queries WHERE file_name = %s", ("file_get_orders_by_market_order_by_shipping_cost",))
-
-        if file_exists:
-            db.disconnect()
-            return xml_result
-
-        db.execute_query("INSERT INTO queries (query_type, file_name, xml) VALUES (2, %s, %s)", ("file_get_orders_by_market_order_by_shipping_cost", xml_result))
+        db.execute_query("INSERT INTO queries (query_type, file_name, xml) VALUES (%s, %s, %s)", (f"2 - {market_id}", file_name, xml_result),)
 
         db.disconnect()
 
@@ -85,11 +82,15 @@ def get_orders_by_market_order_by_shipping_cost(market_id):
     else:
         return "No results found"
 
-def retrieve_customer_information_with_address_details():
+def retrieve_customer_information_with_address_details(file_name):
     db = DBConnection()
     db.connect()
 
-    file_name = "Global_Superstore2.csv"
+    file_exists = db.execute_query_with_return("SELECT xml FROM queries WHERE file_name = %s and query_type = %s", (file_name, "3",))
+
+    if file_exists:
+        db.disconnect()
+        return file_exists[0][0]
 
     xquery = """
             SELECT
@@ -163,23 +164,21 @@ def retrieve_customer_information_with_address_details():
 
         xml_result = etree.tostring(root, pretty_print=True).decode("utf-8")
 
-        file_exists = db.execute_query_with_return("SELECT file_name FROM queries WHERE file_name = %s", ("file_retrieve_customer_information_with_address_details",))
-
-        if file_exists:
-            db.disconnect()
-            return xml_result
-
-        db.execute_query("INSERT INTO queries (query_type, file_name, xml) VALUES (3, %s, %s)", ("file_retrieve_customer_information_with_address_details", xml_result))
+        db.execute_query("INSERT INTO queries (query_type, file_name, xml) VALUES (3, %s, %s)", (file_name, xml_result))
 
         db.disconnect()
 
         return xml_result
 
-def count_the_number_of_customers_by_segment_server():
+def count_the_number_of_customers_by_segment_server(file_name):
     db = DBConnection()
     db.connect()
 
-    file_name = "Global_Superstore2.csv"
+    file_exists = db.execute_query_with_return("SELECT xml FROM queries WHERE file_name = %s and query_type = %s", (file_name, "4",))
+
+    if file_exists:
+        db.disconnect()
+        return file_exists[0][0]
 
     xquery = """
             SELECT
@@ -221,13 +220,7 @@ def count_the_number_of_customers_by_segment_server():
 
         xml_result = etree.tostring(root, pretty_print=True).decode("utf-8")
 
-        file_exists = db.execute_query_with_return("SELECT file_name FROM queries WHERE file_name = %s", ("file_count_the_number_of_customers_by_segment_server",))
-
-        if file_exists:
-            db.disconnect()
-            return xml_result
-
-        db.execute_query("INSERT INTO queries (query_type, file_name, xml) VALUES (4, %s, %s)", ("file_count_the_number_of_customers_by_segment_server", xml_result))
+        db.execute_query("INSERT INTO queries (query_type, file_name, xml) VALUES (4, %s, %s)", (file_name, xml_result))
 
         db.disconnect()
 
@@ -235,11 +228,15 @@ def count_the_number_of_customers_by_segment_server():
     else:
         return "No results found"
 
-def get_order_and_customer_details_with_geographic_information():
+def get_order_and_customer_details_with_geographic_information(file_name):
     db = DBConnection()
     db.connect()
 
-    file_name = "Global_Superstore2.csv"
+    file_exists = db.execute_query_with_return("SELECT xml FROM queries WHERE file_name = %s and query_type = %s", (file_name, "5",))
+
+    if file_exists:
+        db.disconnect()
+        return file_exists[0][0]
 
     xquery = """
             SELECT
@@ -315,13 +312,7 @@ def get_order_and_customer_details_with_geographic_information():
 
         xml_result = etree.tostring(root, pretty_print=True).decode("utf-8")
 
-        file_exists = db.execute_query_with_return("SELECT file_name FROM queries WHERE file_name = %s", ("file_get_order_and_customer_details_with_geographic_information",))
-
-        if file_exists:
-            db.disconnect()
-            return xml_result
-
-        db.execute_query("INSERT INTO queries (query_type, file_name, xml) VALUES (5, %s, %s)", ("file_get_order_and_customer_details_with_geographic_information", xml_result))
+        db.execute_query("INSERT INTO queries (query_type, file_name, xml) VALUES (5, %s, %s)", (file_name, xml_result))
 
         db.disconnect()
 

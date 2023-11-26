@@ -21,7 +21,7 @@ def menu():
         elif choice == "2":
             view_files_menu()
         elif choice == "3":
-            query_files_menu()
+            choose_file_menu()
         elif choice == "0":
             break
         else:
@@ -73,7 +73,29 @@ def view_files_menu():
         else:
             print("Invalid choice. Please try again.")
 
-def query_files_menu():
+def choose_file_menu():
+    file_counter = 0
+    while True:
+        print("\nView files on server:")
+        for file in server_files():
+            file_counter += 1
+            print(f"{file_counter}. {file[1]}")
+        print("0 - Exit")
+
+        choice = input("Enter your choice: ")
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+        if choice == "0":
+            break
+        elif choice.isdigit() and int(choice) <= file_counter:
+            file_name = server_files()[int(choice) - 1]
+            query_files_menu(file_name[1])
+            time.sleep(3)
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+def query_files_menu(file_name):
     while True:
         print("\nQuery files:")
         print("1 - Order Orders by Priority")
@@ -87,16 +109,16 @@ def query_files_menu():
         os.system('cls' if os.name == 'nt' else 'clear')
 
         if choice == "1":
-            print(get_orders_order_by_priority())
+            print(get_orders_order_by_priority(file_name))
         elif choice == "2":
             market_id = input("Enter market ID: ")
-            print(get_orders_by_market_order_by_shipping_cost(market_id))
+            print(get_orders_by_market_order_by_shipping_cost(market_id, file_name))
         elif choice == "3":
-            print(retrieve_customer_information_with_address_details())
+            print(retrieve_customer_information_with_address_details(file_name))
         elif choice == "4":
-            print(count_the_number_of_customers_by_segment_server())
+            print(count_the_number_of_customers_by_segment_server(file_name))
         elif choice == "5":
-            print(get_order_and_customer_details_with_geographic_information())
+            print(get_order_and_customer_details_with_geographic_information(file_name))
         elif choice == "0":
             break
         else:
